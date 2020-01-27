@@ -2,6 +2,6 @@
 
 from twitoff.app import make_app
 
-APP = make_app()
+APP, DB = make_app()
 
 from twitoff import Routes
