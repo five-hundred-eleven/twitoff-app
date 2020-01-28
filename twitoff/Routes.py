@@ -1,5 +1,10 @@
-from twitoff import APP
 from flask import render_template
+
+from sqlalchemy.orm.exc import NoResultFound
+
+from twitoff import APP, DB
+from twitoff.models.User import User
+from twitoff.models.Tweet import Tweet
 
 
 
@@ -15,5 +20,13 @@ def helloPage():
 
 @APP.route("/user/<username>")
 def userPage(username):
-    return f"Hello, {username}"
+
+    try:
+        user = User.query.filter(User.name==username).one()
+
+        tweets = "".join(["<p>" + t.text + "</p>" for t in user.tweets])
+        return "<h2>Hello, " + username + "</h2>" + tweets
+
+    except NoResultFound:
+        return "User not found."
 

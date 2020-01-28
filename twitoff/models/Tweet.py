@@ -11,4 +11,5 @@ class Tweet(DB.Model):
     date = DB.Column(DB.DateTime(timezone=False), default=datetime.datetime.utcnow, nullable=False)
 
     fk_user = DB.ForeignKeyConstraint(['user_id'], ['user.id'])
-    user = DB.relationship("User")
+
+    user = DB.relationship("User", backref=DB.backref("tweets", lazy=True))

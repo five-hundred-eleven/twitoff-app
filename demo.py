@@ -10,8 +10,7 @@ for user in users:
     print("User:", user.name)
     print("\tTweets:")
 
-    ts = Tweet.query.filter(Tweet.user_id==user.id).all()
-    for t in ts:
+    for t in user.tweets:
         print("\t\t", t.text)
 
     print()
