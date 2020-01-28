@@ -23,9 +23,8 @@ def userPage(username):
 
     try:
         user = User.query.filter(User.name==username).one()
+        return render_template("tweets.html", user=user)
 
-        tweets = "".join(["<p>" + t.text + "</p>" for t in user.tweets])
-        return "<h2>Hello, " + username + "</h2>" + tweets
 
     except NoResultFound:
         return "User not found."
