@@ -1,11 +1,11 @@
 <html>
     <header>
-        <title>{{ user.name }}'s Tweets</title>
+        <title>{{ username }}'s Tweets</title>
     </header>
 
     <body>
-        <h1>{{ user.name }}'s Tweets</h1>
-        {% for tweet in user.tweets %}
+        <h1>{{ username }}'s Tweets</h1>
+        {% for tweet in tweets %}
         <p>{{ tweet.text }}</p>
         {% endfor %}
     </body>
