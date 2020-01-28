@@ -7,15 +7,10 @@ from twitoff.models.User import User
 from twitoff.models.Tweet import Tweet
 
 
-
 @APP.route("/")
-def indexPage():
-    return "Index page"
-
-
-@APP.route("/hello")
 def helloPage():
-    return render_template("base.html", title="hello")
+    users = User.query.all()
+    return render_template("base.html", users=users)
 
 
 @APP.route("/user/<username>")
