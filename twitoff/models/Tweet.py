@@ -9,6 +9,7 @@ class Tweet(DB.Model):
     user_id = DB.Column(DB.Integer, DB.ForeignKey("user.id"), nullable=False)
     text = DB.Column(DB.Unicode(280), nullable=False)
     date = DB.Column(DB.DateTime(timezone=False), default=datetime.datetime.utcnow, nullable=False)
+    embedding = DB.Column(DB.PickleType, nullable=False)
 
     fk_user = DB.ForeignKeyConstraint(['user_id'], ['user.id'])
 
