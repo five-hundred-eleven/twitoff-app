@@ -4,8 +4,12 @@
     Service for interfacing with the twitter API.
 """
 
+import logging
+
 from decouple import config
 import tweepy
+
+LOG = logging.getLogger("twitoff")
 
 class TwitterService:
     """
@@ -32,7 +36,7 @@ class TwitterService:
             @rtype: tuple(tweepy.models.User, tweepy.models.ResultSet)
         """
 
-        print(f"Getting twitter timeline for {username}")
+        LOG.info(f"Getting twitter timeline for {username}")
 
         user = self.__twitter.get_user(username)
         timeline = user.timeline(
@@ -41,6 +45,6 @@ class TwitterService:
             tweet_mode="extended",
         )
 
-        print(type(timeline), len(timeline))
+        LOG.info(type(timeline), len(timeline))
 
         return user, timeline

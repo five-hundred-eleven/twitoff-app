@@ -39,9 +39,9 @@ def userPage(username):
         return render_template("tweets.html", username=user.name, tweets=tweets)
 
     except NoResultFound as e:
-        print(e)
+        LOG.info(e)
         return "User not found."
 
     except Exception as e:
-        print(e)
+        LOG.info(e)
         return "Unknown error."
