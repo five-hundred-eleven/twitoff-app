@@ -112,31 +112,27 @@ def addUser():
     username = request.form["username"]
     LOG.info(f"Request to add user {username}")
 
+    tweets = []
+
     try:
-        user = user_service.getUser(username)
+        user_service.getUser(username)
         LOG.info("User already exists, updating")
         _, tweets = twitter_service.loadUser(username)
-        tweets_lst = [tweet for tweet in tweets]
-        tweet_service.addTweets(tweets_lst)
-
-        return redirect(f"/user/{username}")
 
     except NoResultFound:
         LOG.info("Adding user...")
-        pass
-
-    try:
         user, tweets = twitter_service.loadUser(username)
-        tweets_lst = [tweet for tweet in tweets]
-
         user_service.addUser(user)
-        tweet_service.addTweets(tweets_lst)
 
-        return redirect(f"/user/{username}")
-
-    except:
+    except Exception as e:
+        LOG.info(e)
         flash("Error adding user!")
         return redirect("/")
+
+    tweets_lst = [tweet for tweet in tweets]
+    tweet_service.addTweets(tweets_lst)
+    return redirect(f"/user/{username}")
+
 
 
 @APP.route("/user/<username>")

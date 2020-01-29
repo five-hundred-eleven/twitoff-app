@@ -45,6 +45,6 @@ class TwitterService:
             tweet_mode="extended",
         )
 
-        LOG.info(type(timeline), len(timeline))
+        LOG.info(f"{len(timeline)}")
 
         return user, timeline
