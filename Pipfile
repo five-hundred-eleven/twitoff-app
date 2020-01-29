@@ -14,6 +14,8 @@ tweepy = "*"
 python-dotenv = "*"
 python-decouple = "*"
 flask-wtf = "*"
+scikit-learn = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.7"

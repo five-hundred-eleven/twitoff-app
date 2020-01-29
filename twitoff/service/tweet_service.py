@@ -52,7 +52,8 @@ class TweetService:
 
         with basilica.Connection(config("BASILICA_KEY")) as conn:
             embeddings = list(conn.embed_sentences(
-                [tweet.full_text for tweet in tweets]
+                [tweet.full_text for tweet in tweets],
+                model="twitter",
             ))
 
         LOG.info("Successfully got basilica embeddings")
