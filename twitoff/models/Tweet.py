@@ -5,6 +5,9 @@ from twitoff import DB
 from twitoff.models.User import User
 
 class Tweet(DB.Model):
+    """
+        Database table for tweets.
+    """
     id = DB.Column(DB.Integer, primary_key=True)
     user_id = DB.Column(DB.Integer, DB.ForeignKey("user.id"), nullable=False)
     text = DB.Column(DB.Unicode(280), nullable=False)
