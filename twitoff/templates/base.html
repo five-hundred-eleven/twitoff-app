@@ -17,15 +17,25 @@
 
         const loading = document.getElementById("loading"),
             content = document.getElementById("content"),
-            submit_add_user = document.getElementById("submitadduser");
+            submit_add_user = document.getElementById("submitadduser"),
+            submit_update_user = document.getElementById("submitupdateuser");
     
         console.log(loading, content, submit_add_user);
 
         loading.style.display = "none";
 
-        submit_add_user.onclick = function() {
+        const loadingScreen = function() {
             loading.style.display = "block";
             content.style.display = "none";
         };
-// ]]></script>
+
+        if (submit_add_user) {
+            submit_add_user.onclick = loadingScreen;
+        }
+
+        if (submit_update_user) {
+            submit_update_user.onclick = loadingScreen;
+        }
+
+    </script>
 </html>

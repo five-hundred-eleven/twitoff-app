@@ -8,8 +8,8 @@ class Tweet(DB.Model):
     """
         Database table for tweets.
     """
-    id = DB.Column(DB.Integer, primary_key=True)
-    user_id = DB.Column(DB.Integer, DB.ForeignKey("user.id"), nullable=False)
+    id = DB.Column(DB.BigInteger, primary_key=True)
+    user_id = DB.Column(DB.BigInteger, DB.ForeignKey("user.id"), nullable=False)
     text = DB.Column(DB.Unicode(500), nullable=False)
     date = DB.Column(DB.DateTime(timezone=False), default=datetime.datetime.utcnow, nullable=False)
     embedding = DB.Column(DB.PickleType, nullable=False)

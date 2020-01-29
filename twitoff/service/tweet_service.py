@@ -66,6 +66,7 @@ class TweetService:
                 date=tweet.created_at,
                 embedding=pickle.dumps(embedding),
             ) for tweet, embedding in zip(tweets, embeddings)
+            if not Tweet.query.get(tweet.id)
         ]
 
         DB.session.add_all(twitoff_tweets)

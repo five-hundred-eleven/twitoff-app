@@ -9,9 +9,13 @@
     <div class="row">
         <div class="col-md-1">
             <h4><a href="/">Home</a></h4>
+            <form action="/user/add" method="POST">
+                <input type="hidden" name="username" value="{{ username }}"></input>
+                <input id="submitupdateuser" type="submit" value="Update"></input>
+            </form>
         </div>
         <div class="col-md-11">
-            <h1>{{ username }}'s Tweets</h1>
+            <h1>{{ name }}'s Tweets</h1>
             {% for tweet in tweets %}
             <p>{{ tweet.date }} -- {{ tweet.text }}</p>
             {% endfor %}

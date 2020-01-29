@@ -5,6 +5,7 @@
     Definition of the routes of the app.
 """
 
+import logging
 import pickle
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
@@ -20,6 +21,8 @@ from twitoff.models.User import User
 from twitoff.models.Tweet import Tweet
 from twitoff.forms.AddUser import AddUser
 from twitoff.forms.Twitoff import Twitoff
+
+LOG = logging.getLogger("twitoff")
 
 
 @APP.route("/", methods=["GET", "POST"])
@@ -39,7 +42,7 @@ def indexPage():
     form_twitoff.user2.choices = user_select
 
     if request.method == 'POST':
-        print("validate")
+        LOG.info("validate")
         user1_name = request.form["user1"]
         user2_name = request.form["user2"]
         tweet = request.form["tweet"]
@@ -101,31 +104,28 @@ def indexPage():
     )
 
 
-@APP.route("/twitoff", methods=["POST"])
-def twitoff():
-    """
-        Performs the twitoff comparison on two users.
-    """
-
-
 @APP.route("/user/add", methods=["POST"])
 def addUser():
     """
         Handles a post request to get a new user.
     """
     username = request.form["username"]
-    print(f"Request to add user {username}")
+    LOG.info(f"Request to add user {username}")
 
     try:
         user = user_service.getUser(username)
-        flash("User already loaded!")
+        LOG.info("User already exists, updating")
+        _, tweets = twitter_service.loadUser(username)
+        tweets_lst = [tweet for tweet in tweets]
+        tweet_service.addTweets(tweets_lst)
+
         return redirect(f"/user/{username}")
 
     except NoResultFound:
+        LOG.info("Adding user...")
         pass
 
     try:
-
         user, tweets = twitter_service.loadUser(username)
         tweets_lst = [tweet for tweet in tweets]
 
@@ -150,7 +150,7 @@ def userPage(username):
     try:
         user = user_service.getUser(username)
         tweets = tweet_service.getTweetsByUserId(user.id)
-        return render_template("tweets.html", username=user.name, tweets=tweets)
+        return render_template("tweets.html", name=user.name, username=user.username, tweets=tweets)
 
     except NoResultFound as e:
         LOG.info(e)
@@ -174,10 +174,10 @@ def reset():
 
 @APP.route("/js/<filename>")
 def js(filename):
-    print(f"serving js: {filename}")
+    LOG.info(f"serving js: {filename}")
     return send_from_directory("../static/js", filename)
 
 @APP.route("/css/<filename>")
 def css(filename):
-    print(f"serving css: {filename}")
+    LOG.info(f"serving css: {filename}")
     return send_from_directory("../static/css", filename)
