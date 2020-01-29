@@ -1,12 +1,14 @@
-<html>
-    <header>
-        <title>{{ username }}'s Tweets</title>
-    </header>
+{% extends 'base.html' %}
 
-    <body>
-        <h1>{{ username }}'s Tweets</h1>
-        {% for tweet in tweets %}
-        <p>{{ tweet.text }}</p>
-        {% endfor %}
-    </body>
-</html>
+{% block content %}
+<header>
+    <title>{{ username }}'s Tweets</title>
+</header>
+
+<body>
+    <h1>{{ username }}'s Tweets</h1>
+    {% for tweet in tweets %}
+    <p>{{ tweet.text }}</p>
+    {% endfor %}
+</body>
+{% endblock %}
