@@ -15,14 +15,16 @@
     <ul>
         <h4>Loaded Users</h4>
         {% for user in users %}
-        <li><a href="user/{{ user.username }}">{{ user.name }}</a></li>
+        <li><a href="user/{{ user.username }}">{{ user.name }} (@{{ user.username }})</a></li>
         {% endfor %}
         <form action="/user/add", method="POST">
             <h4>Add a new user</h4>
-            {{ form_adduser.username }}
+            {{ form_adduser.username(autocomplete="off") }}
             {{ form_adduser.submit() }}
         </form>
     </ul>
     </div>
 </div>
+    <script>
+    </script>
 {% endblock %}

@@ -2,11 +2,30 @@
     <header>
         <title>Twitoff App</title>
         <link rel="stylesheet" href="{{ url_for('css', filename='bootstrap.min.css') }}" />
+        <!-- <link rel="application/javascript" href="{{ url_for('js', filename='jquery-3.4.1.min.js') }}" /> -->
     </header>
     <body>
-        <div class="container">
+        <div id="content" class="container">
             {% block content %}
             {% endblock %}
         </div>
+        <div id="loading">
+            <h2>Loading...</h2>
+        </div>
     </body>
+    <script type="text/javascript">
+
+        const loading = document.getElementById("loading"),
+            content = document.getElementById("content"),
+            submit_add_user = document.getElementById("submitadduser");
+    
+        console.log(loading, content, submit_add_user);
+
+        loading.style.display = "none";
+
+        submit_add_user.onclick = function() {
+            loading.style.display = "block";
+            content.style.display = "none";
+        };
+// ]]></script>
 </html>

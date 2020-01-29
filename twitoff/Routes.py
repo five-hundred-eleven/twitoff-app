@@ -33,7 +33,6 @@ def addUser():
     """
         Handles a post request to get a new user.
     """
-    flash("loading...")
     username = request.form["username"]
     print(f"Request to add user {username}")
 
@@ -79,6 +78,12 @@ def userPage(username):
     except Exception as e:
         LOG.info(e)
         return "Unknown error."
+
+
+@APP.route("/js/<filename>")
+def js(filename):
+    print(f"serving js: {filename}")
+    return send_from_directory("../static/js", filename)
 
 @APP.route("/css/<filename>")
 def css(filename):

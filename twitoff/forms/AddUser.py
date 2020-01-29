@@ -13,4 +13,4 @@ class AddUser(FlaskForm):
         Contains the form for adding a twitter user.
     """
     username = StringField("Twitter Username", validators=[DataRequired()])
-    submit = SubmitField("Add User")
+    submit = SubmitField("Add User", id="submitadduser")
