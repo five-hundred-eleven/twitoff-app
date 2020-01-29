@@ -142,7 +142,6 @@ def userPage(username):
 
         @type username: str
     """
-
     try:
         user = user_service.getUser(username)
         tweets = tweet_service.getTweetsByUserId(user.id)

@@ -18,7 +18,8 @@
         const loading = document.getElementById("loading"),
             content = document.getElementById("content"),
             submit_add_user = document.getElementById("submitadduser"),
-            submit_update_user = document.getElementById("submitupdateuser");
+            submit_update_user = document.getElementById("submitupdateuser"),
+            submit_twitoff = document.getElementById("twitoff-submit");
     
         console.log(loading, content, submit_add_user);
 
@@ -35,6 +36,10 @@
 
         if (submit_update_user) {
             submit_update_user.onclick = loadingScreen;
+        }
+
+        if (submit_twitoff) {
+            submit_twitoff.onclick = loadingScreen;
         }
 
     </script>

@@ -16,6 +16,7 @@ python-decouple = "*"
 flask-wtf = "*"
 scikit-learn = "*"
 pandas = "*"
+python-redis-cache = "*"
 
 [requires]
 python_version = "3.7"
