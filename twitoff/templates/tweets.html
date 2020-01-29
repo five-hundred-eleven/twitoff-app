@@ -13,7 +13,7 @@
         <div class="col-md-11">
             <h1>{{ username }}'s Tweets</h1>
             {% for tweet in tweets %}
-            <p>{{ tweet.text }}</p>
+            <p>{{ tweet.date }} -- {{ tweet.text }}</p>
             {% endfor %}
         </div>
     </div>

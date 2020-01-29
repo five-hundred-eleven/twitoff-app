@@ -57,13 +57,14 @@ def indexPage():
             pickle.loads(t.embedding) for t in user2_tweets
         ]
 
+        target = "target"
+
         user1_df = pd.DataFrame(user1_embeddings)
-        user1_df["target"] = [1]*len(user1_df)
+        user1_df[target] = [1]*len(user1_df)
         user2_df = pd.DataFrame(user2_embeddings)
-        user2_df["target"] = [2]*len(user2_df)
+        user2_df[target] = [2]*len(user2_df)
 
         df = pd.concat([user1_df, user2_df])
-        target = "target"
         features = df.columns.drop([target])
         X = df[features]
         y = df[target]
@@ -87,6 +88,7 @@ def indexPage():
             twitoff_winner = "Unknown error"
 
     else:
+        tweet = ""
         twitoff_winner = ""
 
     return render_template(
@@ -94,6 +96,7 @@ def indexPage():
             users=users,
             form_adduser=form_adduser,
             form_twitoff=form_twitoff,
+            tweet=tweet,
             twitoff_winner=twitoff_winner
     )
 

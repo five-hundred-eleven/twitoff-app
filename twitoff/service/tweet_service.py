@@ -62,7 +62,7 @@ class TweetService:
             Tweet(
                 id=tweet.id,
                 user_id=tweet.user.id,
-                text=tweet.full_text,
+                text=tweet.full_text[:500],
                 date=tweet.created_at,
                 embedding=pickle.dumps(embedding),
             ) for tweet, embedding in zip(tweets, embeddings)
