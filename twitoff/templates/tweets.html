@@ -7,11 +7,15 @@
 
 <body>
     <div class="row">
-        <h4><a href="/">Home</a></h4>
+        <div class="col-md-1">
+            <h4><a href="/">Home</a></h4>
+        </div>
+        <div class="col-md-11">
+            <h1>{{ username }}'s Tweets</h1>
+            {% for tweet in tweets %}
+            <p>{{ tweet.text }}</p>
+            {% endfor %}
+        </div>
     </div>
-    <h1>{{ username }}'s Tweets</h1>
-    {% for tweet in tweets %}
-    <p>{{ tweet.text }}</p>
-    {% endfor %}
 </body>
 {% endblock %}

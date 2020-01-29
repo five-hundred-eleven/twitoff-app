@@ -5,11 +5,21 @@
     <h1>Twitoff</h1>
 </div>
 <div class="row">
-    <h2>Users</h2>
-</div>
-<div class="row">
     <div class="col-md-6">
-        <h4>placeholder</h4>
+        <h4>Select two users and find out which is more likely to write the tweet!</h4>
+        <form action="", method="POST">
+            <p>
+            {{ form_twitoff.user1() }}
+            </p><p>
+            {{ form_twitoff.user2() }}
+            </p><p>
+            {{ form_twitoff.tweet.label }}
+            <br />
+            {{ form_twitoff.tweet() }}
+            </p><p>
+            {{ form_twitoff.submit() }}
+            </p>
+        </form>
     </div>
     <div class="col-md-6">
     <ul>

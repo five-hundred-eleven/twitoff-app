@@ -15,6 +15,7 @@ from twitoff.service import user_service, tweet_service, twitter_service
 from twitoff.models.User import User
 from twitoff.models.Tweet import Tweet
 from twitoff.forms.AddUser import AddUser
+from twitoff.forms.Twitoff import Twitoff
 
 
 @APP.route("/")
@@ -23,9 +24,17 @@ def indexPage():
        Renders the base.html template. 
     """
     users = User.query.all()
-
     form_adduser = AddUser()
-    return render_template("index.html", users=users, form_adduser=form_adduser)
+
+    form_twitoff = Twitoff()
+    user_select = [
+        (user.username, f"{user.name} (@{user.username})")
+        for user in users
+    ]
+    form_twitoff.user1.choices = user_select
+    form_twitoff.user2.choices = user_select
+
+    return render_template("index.html", users=users, form_adduser=form_adduser, form_twitoff=form_twitoff)
 
 
 @APP.route("/user/add", methods=["POST"])
