@@ -82,17 +82,27 @@ def indexPage():
             ))
 
         tweet_df = pd.DataFrame([emb])
-        pred = model.predict(tweet_df)
-        if pred[0] == 1:
+        pred, = model.predict_proba(tweet_df)
+
+        if model.classes_[0] == 1:
+            user1_class, user2_class = 0, 1
+        else:
+            user1_class, user2_class = 1, 0
+
+        if pred[user1_class] >= pred[user2_class]:
             twitoff_winner = f"More likely to be tweeted by {user1.name} (@{user1.username})"
-        elif pred[0] == 2:
+            conf = "Confidence: {0}%".format(pred[user1_class]*100)
+        elif pred[user1_class] < pred[user2_class]:
             twitoff_winner = f"More likely to be tweeted by {user2.name} (@{user2.username})"
+            conf = "Confidence: {0}%".format(pred[user2_class]*100)
         else:
             twitoff_winner = "Unknown error"
+            conf = ""
 
     else:
         tweet = ""
         twitoff_winner = ""
+        conf = ""
 
     return render_template(
             "index.html",
@@ -100,7 +110,8 @@ def indexPage():
             form_adduser=form_adduser,
             form_twitoff=form_twitoff,
             tweet=tweet,
-            twitoff_winner=twitoff_winner
+            twitoff_winner=twitoff_winner,
+            conf=conf,
     )
 
 
