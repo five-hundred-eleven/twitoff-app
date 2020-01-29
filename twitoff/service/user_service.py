@@ -24,7 +24,9 @@ class UserService:
         """
         assert isinstance(username, str)
         print(f"Querying table for username: {username}")
-        return User.query.filter(func.lower(User.username) == func.lower(username)).one()
+        res = User.query.filter(func.lower(User.username) == func.lower(username)).one()
+        print("Success!")
+        return res
 
     def getAllUsers(self):
         """
@@ -33,7 +35,9 @@ class UserService:
             @rtype: List[User]
         """
         print("Querying for all users")
-        return User.query.all()
+        res = User.query.all()
+        print("Success!")
+        return res
 
     def addUser(self, user):
         """
@@ -47,3 +51,5 @@ class UserService:
 
         DB.session.add(twitoff_user)
         DB.session.commit()
+
+        print("Success!")

@@ -35,7 +35,7 @@ def userPage(username):
 
     try:
         user = user_service.getUser(username)
-        tweets = tweet_service.getTweetsByUser(username)
+        tweets = tweet_service.getTweetsByUserId(user.id)
         return render_template("tweets.html", username=user.name, tweets=tweets)
 
     except NoResultFound as e:
