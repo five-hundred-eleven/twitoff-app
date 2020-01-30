@@ -91,10 +91,10 @@ def indexPage():
 
         if pred[user1_class] >= pred[user2_class]:
             twitoff_winner = f"More likely to be tweeted by {user1.name} (@{user1.username})"
-            conf = "Confidence: {0}%".format(pred[user1_class]*100)
+            conf = "Confidence: {:.2f}%".format(pred[user1_class]*100)
         elif pred[user1_class] < pred[user2_class]:
             twitoff_winner = f"More likely to be tweeted by {user2.name} (@{user2.username})"
-            conf = "Confidence: {0}%".format(pred[user2_class]*100)
+            conf = "Confidence: {:.2f}%".format(pred[user2_class]*100)
         else:
             twitoff_winner = "Unknown error"
             conf = ""
