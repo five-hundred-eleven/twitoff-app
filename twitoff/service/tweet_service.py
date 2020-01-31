@@ -15,7 +15,7 @@ from sqlalchemy import func
 from twitoff import DB
 from twitoff.models.User import User
 from twitoff.models.Tweet import Tweet
-from twitoff.service import user_service
+from twitoff import REDIS
 
 
 LOG = logging.getLogger("twitoff")
@@ -46,10 +46,27 @@ class TweetService:
             @type tweets: List[tweepy.models.Status]
         """
         assert all(isinstance(tweet, tweepy.models.Status) for tweet in tweets)
-
+        
         LOG.info("Adding tweets to database")
-        LOG.info(f"First tweet: {tweets[0].full_text}")
 
+        if len(tweets) == 0:
+            LOG.info("No tweets found!")
+            return
+
+        first_tweet = tweets[0]
+        user = User.query.get(first_tweet.user.id)
+        LOG.info(f"First tweet: {first_tweet.full_text}")
+
+        # invalidate redis cache for the user
+        keys = [
+            key for key in REDIS.keys()
+            if str(key).startswith(user.username) or str(key).endswith(user.username)
+        ]
+        LOG.info(f"Found {len(keys)} cached models for the user, invalidating them")
+        for key in keys:
+            REDIS.delete(key)
+
+        # get basilica embeddings
         with basilica.Connection(config("BASILICA_KEY")) as conn:
             embeddings = list(conn.embed_sentences(
                 [tweet.full_text for tweet in tweets],

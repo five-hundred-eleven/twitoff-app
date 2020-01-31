@@ -18,6 +18,8 @@ scikit-learn = "*"
 pandas = "*"
 python-redis-cache = "*"
 psycopg2 = "*"
+redis = "*"
+joblib = "*"
 
 [requires]
 python_version = "3.7"

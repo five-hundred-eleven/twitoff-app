@@ -20,6 +20,7 @@ class UserService:
         Service for dealing with the `user` table in the database.
     """
 
+
     def getUser(self, username):
         """
             Gets the user with the given username.

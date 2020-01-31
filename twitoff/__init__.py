@@ -11,7 +11,8 @@ import logging
 
 from twitoff.app import make_app
 
-APP, DB = make_app()
+APP, DB, REDIS = make_app()
+LOG = logging.getLogger("twitoff")
 
 from twitoff import Routes
 from twitoff.service.util_service import UtilService
@@ -19,4 +20,4 @@ from twitoff.service.util_service import UtilService
 UTIL = UtilService()
 
 logging.basicConfig(level=logging.DEBUG)
-LOG = logging.getLogger("twitoff")
+

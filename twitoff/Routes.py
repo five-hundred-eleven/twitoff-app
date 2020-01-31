@@ -6,11 +6,6 @@
 """
 
 import logging
-import pickle
-import pandas as pd
-from sklearn.linear_model import LogisticRegression
-import basilica
-from decouple import config
 
 from flask import render_template, send_from_directory, request, redirect, flash
 from sqlalchemy.orm.exc import NoResultFound
@@ -21,6 +16,7 @@ from twitoff.models.User import User
 from twitoff.models.Tweet import Tweet
 from twitoff.forms.AddUser import AddUser
 from twitoff.forms.Twitoff import Twitoff
+from twitoff.predict import do_prediction
 
 LOG = logging.getLogger("twitoff")
 
@@ -50,59 +46,16 @@ def indexPage():
         user1 = user_service.getUser(user1_name)
         user2 = user_service.getUser(user2_name)
 
-        user1_tweets = tweet_service.getTweetsByUserId(user1.id)
-        user2_tweets = tweet_service.getTweetsByUserId(user2.id)
+        winner, conf = do_prediction(user1, user2, tweet)
+        conf *= 100
 
-        user1_embeddings = [
-            pickle.loads(t.embedding) for t in user1_tweets
-        ]
-        user2_embeddings = [
-            pickle.loads(t.embedding) for t in user2_tweets
-        ]
-
-        target = "target"
-
-        user1_df = pd.DataFrame(user1_embeddings)
-        user1_df[target] = [1]*len(user1_df)
-        user2_df = pd.DataFrame(user2_embeddings)
-        user2_df[target] = [2]*len(user2_df)
-
-        df = pd.concat([user1_df, user2_df])
-        features = df.columns.drop([target])
-        X = df[features]
-        y = df[target]
-
-        model = LogisticRegression(solver="lbfgs")
-        model.fit(X, y)
-
-        with basilica.Connection(config("BASILICA_KEY")) as conn:
-            emb = list(conn.embed_sentence(
-                tweet,
-                model="twitter",
-            ))
-
-        tweet_df = pd.DataFrame([emb])
-        pred, = model.predict_proba(tweet_df)
-
-        if model.classes_[0] == 1:
-            user1_class, user2_class = 0, 1
-        else:
-            user1_class, user2_class = 1, 0
-
-        if pred[user1_class] >= pred[user2_class]:
-            twitoff_winner = f"More likely to be tweeted by {user1.name} (@{user1.username})"
-            conf = "Confidence: {:.2f}%".format(pred[user1_class]*100)
-        elif pred[user1_class] < pred[user2_class]:
-            twitoff_winner = f"More likely to be tweeted by {user2.name} (@{user2.username})"
-            conf = "Confidence: {:.2f}%".format(pred[user2_class]*100)
-        else:
-            twitoff_winner = "Unknown error"
-            conf = ""
+        twitoff_winner_str = f"More likely to be tweeted by {user1.name} (@{user1.username})"
+        conf_str = f"Confidence: {conf:.2f}%"
 
     else:
         tweet = ""
-        twitoff_winner = ""
-        conf = ""
+        twitoff_winner_str = ""
+        conf_str = ""
 
     return render_template(
             "index.html",
@@ -110,8 +63,8 @@ def indexPage():
             form_adduser=form_adduser,
             form_twitoff=form_twitoff,
             tweet=tweet,
-            twitoff_winner=twitoff_winner,
-            conf=conf,
+            twitoff_winner=twitoff_winner_str,
+            conf=conf_str,
     )
 
 
