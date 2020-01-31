@@ -34,7 +34,9 @@
         <ul>
             {% for cached_model in cached_models %}
                 <li>
+                    <a href="#" onclick="selectModel('{{ cached_model[0] }}', '{{ cached_model[1] }}')">
                     {{ cached_model[0] }} vs. {{ cached_model[1] }}
+                    </a>
                 </li>
             {% endfor %}
         </ul>
@@ -55,5 +57,12 @@
     </div>
 </div>
     <script>
+        const selectModel = (u1, u2) => {
+            const first = document.getElementById("first-user-input"),
+                second = document.getElementById("second-user-input");
+
+            first.value = u1;
+            second.value = u2;
+        };
     </script>
 {% endblock %}
