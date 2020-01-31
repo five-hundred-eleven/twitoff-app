@@ -23,6 +23,21 @@ embeddings for the hypothetical tweet, and use the embeddings to predict which
 twitter account would be more likely to tweet it. The results are then returned
 to the user.
 
+### Cache
+
+Since training models is a relatively expensive operation, we cache
+models using Redis. The redis key is the username of the account with the lesser twitter
+id, concatenated with an "@", concatenated with the username of the account with the greater.
+twitter id.
+```
+if user1.id > user2.id:
+    user1, user2 = user2, user1
+key = user1.username + "@" + user2.username
+```
+
+When a model is stored, it is simply pickled and stored as a bytes object. A list of cached
+models is shown on the home page of the app.
+
 ### Nature of the Project
 
 This is a toy prototype for instructional purposes.
