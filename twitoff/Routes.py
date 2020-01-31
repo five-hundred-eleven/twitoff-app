@@ -57,13 +57,8 @@ def indexPage():
         twitoff_winner_str = ""
         conf_str = ""
 
-    def __splitkey(s):
-        s = s.decode("UTF-8").split("@")
-        s1, s2 = s
-        return s1, s2
-
     cached_models = [
-        __splitkey(key) for key in REDIS.keys()
+        key.decode("UTF-8").split("@") for key in REDIS.keys()
     ]
 
     return render_template(

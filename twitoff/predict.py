@@ -64,10 +64,6 @@ def __create_model_cached(user1, user2):
         f"__create_model_cached(<User {user1.username}>,"
         f"<User {user2.username}>)"
     )
-
-    if user1.id > user2.id:
-        LOG.info("swapping users as per user id")
-        user1, user2 = user2, user1
     
     key = user1.username + "@" + user2.username
     model = REDIS.get(key)
@@ -103,6 +99,10 @@ def do_prediction(user1, user2, tweet):
         f"<User {user2.username}>,"
         f"{tweet})"
     )
+
+    if user1.id > user2.id:
+        LOG.info("swapping users as per user id")
+        user1, user2 = user2, user1
 
     model = __create_model_cached(user1, user2)
     with basilica.Connection(config("BASILICA_KEY")) as conn:
