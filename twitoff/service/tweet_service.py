@@ -60,7 +60,7 @@ class TweetService:
         # invalidate redis cache for the user
         keys = [
             key for key in REDIS.keys()
-            if str(key).startswith(user.username) or str(key).endswith(user.username)
+            if user.username in str(key)
         ]
         LOG.info(f"Found {len(keys)} cached models for the user, invalidating them")
         for key in keys:
