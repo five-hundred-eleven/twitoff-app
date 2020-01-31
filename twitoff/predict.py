@@ -104,6 +104,7 @@ def do_prediction(user1, user2, tweet):
         LOG.info("swapping users as per user id")
         user1, user2 = user2, user1
 
+
     model = __create_model_cached(user1, user2)
     with basilica.Connection(config("BASILICA_KEY")) as conn:
         emb = list(conn.embed_sentence(
@@ -115,9 +116,11 @@ def do_prediction(user1, user2, tweet):
     # assert shape is (1,)
     pred, = model.predict_proba(emb_arr)
 
-    u1_ix, = np.where(model.classes_ == 1)
-    u2_ix, = np.where(model.classes_ == 2)
-    if pred[u1_ix] > pred[u2_ix]:
-        return user1, pred[u1_ix][0]
+    classes = list(model.classes_)
+    u1_ix = classes.index(1)
+    u2_ix = classes.index(2)
 
-    return user2, pred[u2_ix][0]
+    if pred[u1_ix] > pred[u2_ix]:
+        return user1, pred[u1_ix]
+
+    return user2, pred[u2_ix]

@@ -49,7 +49,7 @@ def indexPage():
         winner, conf = do_prediction(user1, user2, tweet)
         conf *= 100
 
-        twitoff_winner_str = f"More likely to be tweeted by {user1.name} (@{user1.username})"
+        twitoff_winner_str = f"More likely to be tweeted by {winner.name} (@{winner.username})"
         conf_str = f"Confidence: {conf:.2f}%"
 
     else:
