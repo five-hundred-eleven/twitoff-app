@@ -69,7 +69,7 @@ def __create_model_cached(user1, user2):
         LOG.info("swapping users as per user id")
         user1, user2 = user2, user1
     
-    key = user1.username + user2.username
+    key = user1.username + "@" + user2.username
     model = REDIS.get(key)
 
     if not model:

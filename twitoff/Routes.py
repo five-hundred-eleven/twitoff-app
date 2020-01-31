@@ -10,7 +10,7 @@ import logging
 from flask import render_template, send_from_directory, request, redirect, flash
 from sqlalchemy.orm.exc import NoResultFound
 
-from twitoff import APP, DB
+from twitoff import APP, DB, REDIS
 from twitoff.service import user_service, tweet_service, twitter_service
 from twitoff.models.User import User
 from twitoff.models.Tweet import Tweet
@@ -57,6 +57,15 @@ def indexPage():
         twitoff_winner_str = ""
         conf_str = ""
 
+    def __splitkey(s):
+        s = s.decode("UTF-8").split("@")
+        s1, s2 = s
+        return s1, s2
+
+    cached_models = [
+        __splitkey(key) for key in REDIS.keys()
+    ]
+
     return render_template(
             "index.html",
             users=users,
@@ -65,6 +74,7 @@ def indexPage():
             tweet=tweet,
             twitoff_winner=twitoff_winner_str,
             conf=conf_str,
+            cached_models=cached_models,
     )
 
 

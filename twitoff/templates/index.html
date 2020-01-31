@@ -29,6 +29,16 @@
         <p>
             {{ conf }}
         </p>
+        <h5> Cached models: </h5>
+
+        <ul>
+            {% for cached_model in cached_models %}
+                <li>
+                    {{ cached_model[0] }} vs. {{ cached_model[1] }}
+                </li>
+            {% endfor %}
+        </ul>
+
     </div>
     <div class="col-md-6">
     <ul>
