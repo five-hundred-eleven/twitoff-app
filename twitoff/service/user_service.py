@@ -34,6 +34,10 @@ class UserService:
         LOG.info("Success!")
         return res
 
+    def getUserById(self, user_id):
+        res = User.query.filter(User.id == user_id).one()
+        return res
+
     def getAllUsers(self):
         """
             Gets all users.

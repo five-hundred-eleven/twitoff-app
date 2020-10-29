@@ -20,6 +20,8 @@ python-redis-cache = "*"
 psycopg2 = "*"
 redis = "*"
 joblib = "*"
+spacy = "*"
+simpletransformers = "*"
 
 [requires]
 python_version = "3.7"

@@ -12,6 +12,7 @@ import logging
 from twitoff.app import make_app
 
 APP, DB, REDIS = make_app()
+application = APP
 LOG = logging.getLogger("twitoff")
 
 from twitoff import Routes

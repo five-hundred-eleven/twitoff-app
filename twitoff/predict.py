@@ -2,12 +2,14 @@
 
 from io import StringIO
 import pickle
+import joblib
 import logging
 
 from decouple import config
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-import basilica
+from simpletransformers.classification import ClassificationModel
+
 
 from twitoff.service import user_service, tweet_service
 from twitoff.models.User import User
@@ -104,23 +106,20 @@ def do_prediction(user1, user2, tweet):
         LOG.info("swapping users as per user id")
         user1, user2 = user2, user1
 
-
-    model = __create_model_cached(user1, user2)
+    #model = __create_model_cached(user1, user2)
+    """
     with basilica.Connection(config("BASILICA_KEY")) as conn:
         emb = list(conn.embed_sentence(
             tweet,
             model="twitter",
         ))
-    emb_arr = np.array([emb])
+    """
+    tweets_df = tweet_service.getAllTweetsAsDF()
+    cls = ClassificationModel("roberta", "roberta-base", use_cuda=False)
+    cls.train_model(tweets_df)
 
     # assert shape is (1,)
-    pred, = model.predict_proba(emb_arr)
+    pred, raw = cls.predict([tweet])
 
-    classes = list(model.classes_)
-    u1_ix = classes.index(1)
-    u2_ix = classes.index(2)
-
-    if pred[u1_ix] > pred[u2_ix]:
-        return user1, pred[u1_ix]
-
-    return user2, pred[u2_ix]
+    user = user_service.getUserById(pred[0])
+    return user, 1.
