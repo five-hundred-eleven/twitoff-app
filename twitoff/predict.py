@@ -26,8 +26,12 @@ from twitoff import REDIS
 
 LOG = logging.getLogger("twitoff")
 
-os.system("python3 -m spacy download en_core_web_md")
-__nlp = spacy.load("en_core_web_md")
+try:
+    os.system("python3 -m spacy download en_core_web_md")
+    __nlp = spacy.load("en_core_web_md")
+except:
+    __nlp = English()
+
 __tokenizer = Tokenizer(__nlp.vocab)
 
 def simple_tokenize(doc):
