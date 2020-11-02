@@ -30,10 +30,7 @@ class TweetService:
         Service for dealing with the `tweet` table in the database.
     """
     def __init__(self):
-        os.system("python3 -m spacy download en_core_web_md")
-        self.__nlp = spacy.load("en_core_web_md")
-        self.__tokenizer = spacy.tokenizer.Tokenizer(self.__nlp.vocab)
-        self.__vectorizer = TfidfVectorizer()
+        pass
 
     def getTweetsByUserId(self, user_id):
         """
@@ -55,8 +52,7 @@ class TweetService:
 
     def addTweets(self, tweets):
         """
-            Adds the given tweets to the database and calculates their embedding
-            by using the Basilica API.
+            Adds the given tweets to the database
 
             @type tweets: List[tweepy.models.Status]
         """
@@ -81,8 +77,7 @@ class TweetService:
         for key in keys:
             REDIS.delete(key)
 
-
-        LOG.info("Successfully got basilica embeddings")
+        #LOG.info("Successfully got basilica embeddings")
 
         twitoff_tweets = [
             Tweet(

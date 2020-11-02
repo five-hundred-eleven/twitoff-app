@@ -4,6 +4,7 @@ from io import StringIO
 import pickle
 import joblib
 import logging
+import os
 
 from decouple import config
 import numpy as np
@@ -25,7 +26,8 @@ from twitoff import REDIS
 
 LOG = logging.getLogger("twitoff")
 
-__nlp = English()
+os.system("python3 -m spacy download en_core_web_md")
+__nlp = spacy.load("en_core_web_md")
 __tokenizer = Tokenizer(__nlp.vocab)
 
 def simple_tokenize(doc):
@@ -143,11 +145,13 @@ def do_prediction(user1, user2, tweet):
     tokens = simple_tokenize(tweet)
     vectors = vectorizer.transform([tokens])
     _, indices = nn.kneighbors(vectors)
-    pred = mode([y[ix] for ix in indices[0]])[0]
 
-    print(pred)
+    pred = mode([y[ix] for ix in indices[0]])[0]
+    conf = sum([y[ix] == pred for ix in indices[0]])/5.
+
+    LOG.info(f"pred: {pred}, conf: {conf}")
 
     if pred[0] == 0:
-        return user1, 1.
+        return user1, conf
 
-    return user2, 1.
+    return user2, conf
