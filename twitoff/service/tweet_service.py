@@ -77,15 +77,12 @@ class TweetService:
         for key in keys:
             REDIS.delete(key)
 
-        #LOG.info("Successfully got basilica embeddings")
-
         twitoff_tweets = [
             Tweet(
                 id=tweet.id,
                 user_id=tweet.user.id,
                 text=tweet.full_text[:500],
                 date=tweet.created_at,
-                embedding=pickle.dumps(None),
             ) for tweet in tweets
             if not Tweet.query.get(tweet.id)
         ]
