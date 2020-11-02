@@ -147,7 +147,7 @@ def do_prediction(user1, user2, tweet):
     _, indices = nn.kneighbors(vectors)
 
     pred = mode([y[ix] for ix in indices[0]])[0]
-    conf = sum([y[ix] == pred for ix in indices[0]])/5.
+    conf = sum([y[ix] == pred[0] for ix in indices[0]])/5.
 
     LOG.info(f"pred: {pred}, conf: {conf}")
 
