@@ -34,8 +34,8 @@
         <ul>
             {% for cached_model in cached_models %}
                 <li>
-                    <a href="#" onclick="selectModel('{{ cached_model[0] }}', '{{ cached_model[1] }}')">
-                    {{ cached_model[0] }} vs. {{ cached_model[1] }}
+                    <a href="#" onclick="selectModel('{{ cached_model[1] }}', '{{ cached_model[2] }}')">
+                    {{ cached_model[1] }} vs. {{ cached_model[2] }}
                     </a>
                 </li>
             {% endfor %}

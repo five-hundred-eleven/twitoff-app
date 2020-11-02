@@ -7,9 +7,16 @@ import logging
 
 from decouple import config
 import numpy as np
+import pandas as pd
+from scipy.stats import mode
 from sklearn.linear_model import LogisticRegression
-from simpletransformers.classification import ClassificationModel
-
+#from simpletransformers.classification import ClassificationModel
+import re
+import spacy
+from spacy.tokenizer import Tokenizer
+from spacy.lang.en import English
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.neighbors import NearestNeighbors
 
 from twitoff.service import user_service, tweet_service
 from twitoff.models.User import User
@@ -17,6 +24,22 @@ from twitoff import REDIS
 
 
 LOG = logging.getLogger("twitoff")
+
+__nlp = English()
+__tokenizer = Tokenizer(__nlp.vocab)
+
+def simple_tokenize(doc):
+    """
+        Takes a document and returns a list of tokens (simplified lowercase words).
+        This version of the method assumes the doc is already relatively clean
+        and will not handle html tags or extraneous characters.
+        @type doc: str
+        @rtype: List[str]
+    """
+    return " ".join([
+        re.sub(r"[^a-z0-9]", "", t.lemma_.lower()).strip() for t in __tokenizer(doc)
+        if not t.is_stop and not t.is_punct and t.text.strip()
+    ])
 
 def __create_model(user1, user2):
     """
@@ -34,19 +57,28 @@ def __create_model(user1, user2):
     user1_tweets = tweet_service.getTweetsByUserId(user1.id)
     user2_tweets = tweet_service.getTweetsByUserId(user2.id)
 
-    user1_embeddings = [
-        pickle.loads(t.embedding) for t in user1_tweets
+    user1_text = [
+        [t.text, 0] for t in user1_tweets
     ]
-    user2_embeddings = [
-        pickle.loads(t.embedding) for t in user2_tweets
+    user2_text = [
+        [t.text, 1] for t in user2_tweets
     ]
-    X = np.vstack([user1_embeddings, user2_embeddings])
-    y = np.array([1]*len(user1_embeddings) + [2]*len(user2_embeddings))
 
-    model = LogisticRegression(solver="lbfgs")
-    model.fit(X, y)
+    user1_text, user1_y = zip(*user1_text)
+    user2_text, user2_y = zip(*user2_text)
 
-    return model
+    df = pd.DataFrame({"tokens": user1_text + user2_text})
+    df["tokens"] = df["tokens"].apply(simple_tokenize)
+
+    vectorizer = TfidfVectorizer()
+    X = vectorizer.fit_transform(df["tokens"])
+
+    nn = NearestNeighbors(n_neighbors=5)
+    nn.fit(X)
+
+    y = user1_y + user2_y
+
+    return (vectorizer, nn, y)
 
 
 def __create_model_cached(user1, user2):
@@ -67,7 +99,7 @@ def __create_model_cached(user1, user2):
         f"<User {user2.username}>)"
     )
     
-    key = user1.username + "@" + user2.username
+    key = "@" + user1.username + "@" + user2.username
     model = REDIS.get(key)
 
     if not model:
@@ -106,20 +138,16 @@ def do_prediction(user1, user2, tweet):
         LOG.info("swapping users as per user id")
         user1, user2 = user2, user1
 
-    #model = __create_model_cached(user1, user2)
-    """
-    with basilica.Connection(config("BASILICA_KEY")) as conn:
-        emb = list(conn.embed_sentence(
-            tweet,
-            model="twitter",
-        ))
-    """
-    tweets_df = tweet_service.getAllTweetsAsDF()
-    cls = ClassificationModel("roberta", "roberta-base", use_cuda=False)
-    cls.train_model(tweets_df)
+    vectorizer, nn, y = __create_model_cached(user1, user2)
 
-    # assert shape is (1,)
-    pred, raw = cls.predict([tweet])
+    tokens = simple_tokenize(tweet)
+    vectors = vectorizer.transform([tokens])
+    _, indices = nn.kneighbors(vectors)
+    pred = mode([y[ix] for ix in indices[0]])[0]
 
-    user = user_service.getUserById(pred[0])
-    return user, 1.
+    print(pred)
+
+    if pred[0] == 0:
+        return user1, 1.
+
+    return user2, 1.

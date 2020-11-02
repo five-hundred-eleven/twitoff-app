@@ -81,17 +81,6 @@ class TweetService:
         for key in keys:
             REDIS.delete(key)
 
-        # get embeddings
-        """
-        tokens = [
-            " ".join([
-                re.sub(r"[^0-9a-z]", "", t.lemma_.lower()).strip() for t in self.__tokenizer(tweet.full_text)
-                if not t.is_stop and not t.is_punct and t.text.strip
-            ])
-            for tweet in tweets
-        ]
-        """
-
 
         LOG.info("Successfully got basilica embeddings")
 
@@ -102,7 +91,7 @@ class TweetService:
                 text=tweet.full_text[:500],
                 date=tweet.created_at,
                 embedding=pickle.dumps(None),
-            ) for tweet, embedding in zip(tweets, embeddings)
+            ) for tweet in tweets
             if not Tweet.query.get(tweet.id)
         ]
 
